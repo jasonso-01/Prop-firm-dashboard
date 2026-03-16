@@ -1,0 +1,660 @@
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PropEdge — Prop Firm Trading Dashboard</title>
+  <meta name="description" content="Professional prop firm dashboard with futures sizing calculator, equity curve simulator, and risk management tools.">
+
+  <!-- Fonts -->
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=jet-brains-mono@400,500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ───── SIDEBAR ───── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <svg aria-label="PropEdge" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="6" fill="var(--color-primary)"/>
+        <path d="M7 22 L13 10 L19 17 L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="23" cy="12" r="2.5" fill="white"/>
+        <path d="M7 22 H25" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+      <span class="logo-text">PropEdge</span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-tab="calculator" onclick="switchTab('calculator', this)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
+      <span>Sizing Calculator</span>
+    </button>
+    <button class="nav-item" data-tab="simulator" onclick="switchTab('simulator', this)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Equity Simulator</span>
+    </button>
+    <button class="nav-item" data-tab="rulebook" onclick="switchTab('rulebook', this)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Prop Rules</span>
+    </button>
+    <button class="nav-item" data-tab="journal" onclick="switchTab('journal', this)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Trade Journal</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <span class="sidebar-footer-text">v1.0</span>
+  </div>
+</aside>
+
+<!-- ───── MAIN ───── -->
+<main class="main-content">
+
+  <!-- ══════════════════════════════════════════
+       TAB 1: SIZING CALCULATOR
+  ══════════════════════════════════════════ -->
+  <section class="tab-panel active" id="tab-calculator">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Sizing Calculator</h1>
+        <p class="page-subtitle">Instant position sizing for futures — fixed risk, any instrument</p>
+      </div>
+    </div>
+
+    <div class="calc-layout">
+      <!-- INPUTS CARD -->
+      <div class="card calc-inputs">
+        <div class="card-header">
+          <span class="card-title">Parameters</span>
+        </div>
+        <div class="card-body">
+
+          <!-- Account Size -->
+          <div class="field-group">
+            <label class="field-label">Account Size</label>
+            <div class="preset-row">
+              <button class="preset-btn active" onclick="setAccount(50000, this)">$50K</button>
+              <button class="preset-btn" onclick="setAccount(100000, this)">$100K</button>
+              <button class="preset-btn" onclick="setAccount(150000, this)">$150K</button>
+              <button class="preset-btn" onclick="setAccount(200000, this)">$200K</button>
+            </div>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="accountSize" value="50000" min="1000" placeholder="Custom amount" oninput="clearAccountPreset(); calculate()">
+            </div>
+          </div>
+
+          <!-- Instrument -->
+          <div class="field-group">
+            <label class="field-label">Instrument</label>
+            <div class="instrument-grid">
+              <button class="instrument-btn active" onclick="setInstrument('MES', this)">MES</button>
+              <button class="instrument-btn" onclick="setInstrument('ES', this)">ES</button>
+              <button class="instrument-btn" onclick="setInstrument('MNQ', this)">MNQ</button>
+              <button class="instrument-btn" onclick="setInstrument('NQ', this)">NQ</button>
+              <button class="instrument-btn" onclick="setInstrument('MGC', this)">MGC</button>
+              <button class="instrument-btn" onclick="setInstrument('GC', this)">GC</button>
+              <button class="instrument-btn" onclick="setInstrument('MCL', this)">MCL</button>
+              <button class="instrument-btn" onclick="setInstrument('CL', this)">CL</button>
+              <button class="instrument-btn" onclick="setInstrument('6B', this)">6B</button>
+              <button class="instrument-btn" onclick="setInstrument('6C', this)">6C</button>
+              <button class="instrument-btn" onclick="setInstrument('6J', this)">6J</button>
+            </div>
+            <div class="instrument-info" id="instrumentInfo">
+              <span id="instrDetail">MES · $5/pt · Tick $1.25 · 0.25pt min move</span>
+            </div>
+          </div>
+
+          <!-- Risk Per Trade -->
+          <div class="field-group">
+            <label class="field-label">Risk Per Trade</label>
+            <div class="risk-type-row">
+              <label class="risk-toggle">
+                <input type="radio" name="riskType" value="absolute" checked onchange="toggleRiskType('absolute')">
+                <span>$ Absolute</span>
+              </label>
+              <label class="risk-toggle">
+                <input type="radio" name="riskType" value="percent" onchange="toggleRiskType('percent')">
+                <span>% of Account</span>
+              </label>
+            </div>
+            <div class="input-wrap" id="riskAbsWrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="riskAbsolute" value="300" min="1" placeholder="e.g. 300" oninput="calculate()">
+            </div>
+            <div class="input-wrap hidden" id="riskPctWrap">
+              <input type="number" id="riskPercent" value="0.6" min="0.01" max="100" step="0.1" placeholder="e.g. 0.6" oninput="calculate()">
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+
+          <!-- Entry / SL -->
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Entry Price</label>
+              <input type="number" id="entryPrice" value="" step="0.01" placeholder="e.g. 5800.25" oninput="calculate()">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Stop Loss Price</label>
+              <input type="number" id="stopLoss" value="" step="0.01" placeholder="e.g. 5794.00" oninput="calculate()">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- OUTPUT CARD -->
+      <div class="card calc-output">
+        <div class="card-header">
+          <span class="card-title">Sizing Result</span>
+          <span class="live-badge" id="liveBadge">LIVE</span>
+        </div>
+        <div class="card-body">
+
+          <!-- PRIMARY NUMBER -->
+          <div class="result-hero">
+            <div class="result-number" id="resultContracts">—</div>
+            <div class="result-label">contracts</div>
+            <div class="result-direction" id="resultDirection"></div>
+          </div>
+
+          <!-- STATS GRID -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-label">Risk USD</span>
+              <span class="stat-value" id="statRiskUSD">—</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Stop Distance</span>
+              <span class="stat-value" id="statStopDist">—</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Stop in Ticks</span>
+              <span class="stat-value" id="statStopTicks">—</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">$ per Contract</span>
+              <span class="stat-value" id="statPerContract">—</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Risk % of Acct</span>
+              <span class="stat-value" id="statRiskPct">—</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Notional Value</span>
+              <span class="stat-value" id="statNotional">—</span>
+            </div>
+          </div>
+
+          <!-- RR TARGETS -->
+          <div class="rr-section">
+            <div class="rr-header">
+              <span class="section-label">Take Profit Levels (by RR)</span>
+              <span class="rr-note">based on entry + stop</span>
+            </div>
+            <div class="rr-grid" id="rrGrid">
+              <div class="rr-item">
+                <span class="rr-tag">1R</span>
+                <span class="rr-price" id="rr1">—</span>
+                <span class="rr-profit" id="rr1p">—</span>
+              </div>
+              <div class="rr-item">
+                <span class="rr-tag">2R</span>
+                <span class="rr-price" id="rr2">—</span>
+                <span class="rr-profit" id="rr2p">—</span>
+              </div>
+              <div class="rr-item">
+                <span class="rr-tag">3R</span>
+                <span class="rr-price" id="rr3">—</span>
+                <span class="rr-profit" id="rr3p">—</span>
+              </div>
+              <div class="rr-item">
+                <span class="rr-tag">5R</span>
+                <span class="rr-price" id="rr5">—</span>
+                <span class="rr-profit" id="rr5p">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK WARNING -->
+          <div class="warning-box hidden" id="warningBox"></div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       TAB 2: EQUITY SIMULATOR
+  ══════════════════════════════════════════ -->
+  <section class="tab-panel" id="tab-simulator">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Equity Curve Simulator</h1>
+        <p class="page-subtitle">Monte Carlo simulation — visualise your edge over N trades</p>
+      </div>
+    </div>
+
+    <div class="sim-layout">
+      <!-- INPUTS -->
+      <div class="card sim-inputs">
+        <div class="card-header"><span class="card-title">Simulation Parameters</span></div>
+        <div class="card-body">
+
+          <div class="field-group">
+            <label class="field-label">Account Capital</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="simCapital" value="50000" min="1000" oninput="scheduleSimulate()">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Win Rate (%)</label>
+            <div class="input-wrap">
+              <input type="number" id="simWinRate" value="50" min="1" max="99" step="1" oninput="scheduleSimulate()">
+              <span class="input-suffix">%</span>
+            </div>
+            <input type="range" id="simWinRateSlider" class="slider" min="10" max="90" value="50" oninput="syncSlider('simWinRate','simWinRateSlider'); scheduleSimulate()">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Risk:Reward Ratio</label>
+            <div class="input-wrap">
+              <span class="input-prefix">1:</span>
+              <input type="number" id="simRRR" value="2" min="0.1" max="20" step="0.1" oninput="scheduleSimulate()">
+            </div>
+            <input type="range" id="simRRRSlider" class="slider" min="0.5" max="10" value="2" step="0.1" oninput="syncSlider('simRRR','simRRRSlider'); scheduleSimulate()">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Risk Type</label>
+            <div class="risk-type-row">
+              <label class="risk-toggle">
+                <input type="radio" name="simRiskType" value="pct" checked onchange="scheduleSimulate()">
+                <span>% per Trade</span>
+              </label>
+              <label class="risk-toggle">
+                <input type="radio" name="simRiskType" value="abs" onchange="scheduleSimulate()">
+                <span>$ Fixed</span>
+              </label>
+            </div>
+            <div id="simRiskPctWrap" class="input-wrap">
+              <input type="number" id="simRiskPct" value="0.6" min="0.01" max="50" step="0.1" oninput="scheduleSimulate()">
+              <span class="input-suffix">%</span>
+            </div>
+            <div id="simRiskAbsWrap" class="input-wrap hidden">
+              <span class="input-prefix">$</span>
+              <input type="number" id="simRiskAbs" value="300" min="1" oninput="scheduleSimulate()">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Trades (Iterations)</label>
+              <input type="number" id="simIterations" value="100" min="10" max="1000" oninput="scheduleSimulate()">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Sim Lines</label>
+              <input type="number" id="simLines" value="50" min="5" max="200" oninput="scheduleSimulate()">
+            </div>
+          </div>
+
+          <!-- PROP FIRM LIMITS -->
+          <div class="field-group">
+            <label class="field-label">Prop Firm Limits (optional)</label>
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-sublabel">Max Daily Loss</label>
+                <div class="input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="simMaxDaily" value="500" min="0" oninput="scheduleSimulate()">
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-sublabel">Max Drawdown</label>
+                <div class="input-wrap">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="simMaxDD" value="2000" min="0" oninput="scheduleSimulate()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TARGET MONTHLY PROFIT -->
+          <div class="field-group target-section">
+            <label class="field-label">Monthly Profit Target</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="simMonthlyTarget" value="3000" min="0" oninput="scheduleSimulate()">
+            </div>
+            <label class="field-sublabel">Trading days / month</label>
+            <input type="number" id="simTradingDays" value="20" min="1" max="31" oninput="scheduleSimulate()">
+          </div>
+
+          <button class="btn-primary" onclick="runSimulation()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Run Simulation
+          </button>
+        </div>
+      </div>
+
+      <!-- CHART + STATS -->
+      <div class="sim-right">
+        <!-- CHART -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <span class="card-title">Monte Carlo Equity Curves</span>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:var(--color-success)"></span>Profitable</span>
+              <span class="legend-item"><span class="legend-dot" style="background:var(--color-error)"></span>Blown</span>
+              <span class="legend-item"><span class="legend-dot legend-dash" style="background:var(--color-primary)"></span>Median</span>
+            </div>
+          </div>
+          <div class="card-body chart-body">
+            <canvas id="equityChart"></canvas>
+            <div class="chart-placeholder" id="chartPlaceholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <p>Configure parameters and click Run Simulation</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIM STATS -->
+        <div class="sim-stats-grid" id="simStatsGrid">
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Profitable Runs</span>
+            <span class="stat-value sim-stat-value" id="ssProfit">—</span>
+          </div>
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Blown Runs</span>
+            <span class="stat-value sim-stat-value danger" id="ssBlown">—</span>
+          </div>
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Median Final Equity</span>
+            <span class="stat-value sim-stat-value" id="ssMedian">—</span>
+          </div>
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Best Run</span>
+            <span class="stat-value sim-stat-value success" id="ssBest">—</span>
+          </div>
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Worst Run</span>
+            <span class="stat-value sim-stat-value danger" id="ssWorst">—</span>
+          </div>
+          <div class="stat-card sim-stat">
+            <span class="stat-label">Expected Value / Trade</span>
+            <span class="stat-value sim-stat-value" id="ssEV">—</span>
+          </div>
+        </div>
+
+        <!-- TARGET ANALYSIS -->
+        <div class="card target-analysis" id="targetAnalysis">
+          <div class="card-header"><span class="card-title">Monthly Target Analysis</span></div>
+          <div class="card-body">
+            <div id="targetContent">
+              <p class="muted-text">Run simulation to see monthly target analysis.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       TAB 3: PROP RULES
+  ══════════════════════════════════════════ -->
+  <section class="tab-panel" id="tab-rulebook">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Prop Firm Rules Tracker</h1>
+        <p class="page-subtitle">Configure your firm's limits and track real-time account status</p>
+      </div>
+    </div>
+
+    <div class="rules-layout">
+      <!-- ACCOUNT STATUS -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Account Setup</span></div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Account Balance</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleBalance" value="50000" oninput="updateRules()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Starting Balance</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleStartBalance" value="50000" oninput="updateRules()">
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Today's P&L</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleDailyPnl" value="0" oninput="updateRules()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Profit Target</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleProfitTarget" value="3000" oninput="updateRules()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIMITS CONFIG -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Firm Limits</span></div>
+        <div class="card-body">
+          <div class="rules-firm-select">
+            <label class="field-label">Preset Firm</label>
+            <select id="firmPreset" onchange="loadFirmPreset()" class="select-input">
+              <option value="custom">Custom</option>
+              <option value="topstep">Topstep ($50K)</option>
+              <option value="ftmo50">FTMO ($50K)</option>
+              <option value="apex">Apex Trader</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Max Daily Loss</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleMaxDaily" value="1000" oninput="updateRules()">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Max Total Drawdown</label>
+              <div class="input-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" id="ruleMaxDD" value="2000" oninput="updateRules()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS CARDS -->
+      <div class="rules-status-grid" id="rulesStatusGrid">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       TAB 4: TRADE JOURNAL
+  ══════════════════════════════════════════ -->
+  <section class="tab-panel" id="tab-journal">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Trade Journal</h1>
+        <p class="page-subtitle">Log trades, track stats, and identify patterns</p>
+      </div>
+      <button class="btn-primary" onclick="openTradeModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log Trade
+      </button>
+    </div>
+
+    <!-- JOURNAL STATS -->
+    <div class="journal-stats" id="journalStats">
+      <!-- injected -->
+    </div>
+
+    <!-- TRADE TABLE -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Trade Log</span>
+        <button class="btn-ghost" onclick="clearJournal()">Clear All</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="tradeTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Instrument</th>
+              <th>Direction</th>
+              <th>Entry</th>
+              <th>Exit</th>
+              <th>Contracts</th>
+              <th>P&amp;L ($)</th>
+              <th>R Multiple</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tradeTableBody">
+            <tr class="empty-row" id="emptyJournal">
+              <td colspan="11">
+                <div class="empty-state">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <p>No trades logged yet. Click "Log Trade" to add your first entry.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───── TRADE LOG MODAL ───── -->
+<div class="modal-overlay hidden" id="tradeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="card-title">Log Trade</span>
+      <button class="btn-icon" onclick="closeTradeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Date</label>
+          <input type="date" id="jtDate">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Instrument</label>
+          <select id="jtInstrument" class="select-input">
+            <option>MES</option><option>ES</option><option>MNQ</option><option>NQ</option>
+            <option>MGC</option><option>GC</option><option>MCL</option><option>CL</option>
+            <option>6B</option><option>6C</option><option>6J</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Direction</label>
+          <select id="jtDirection" class="select-input">
+            <option value="LONG">LONG</option>
+            <option value="SHORT">SHORT</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Contracts</label>
+          <input type="number" id="jtContracts" value="1" min="1">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Entry Price</label>
+          <input type="number" id="jtEntry" step="0.01" placeholder="5800.25">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Exit Price</label>
+          <input type="number" id="jtExit" step="0.01" placeholder="5810.50">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Stop Loss</label>
+          <input type="number" id="jtStopLoss" step="0.01" placeholder="5795.00">
+        </div>
+        <div class="field-group">
+          <label class="field-label">P&amp;L ($) — auto-calc or override</label>
+          <input type="number" id="jtPnl" step="0.01" placeholder="auto">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Notes</label>
+        <textarea id="jtNotes" rows="2" placeholder="Setup, reasoning, lessons..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeTradeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveTradeEntry()">Save Trade</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
