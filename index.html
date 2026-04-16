@@ -23,7 +23,7 @@
   <meta name="description" content="Professional prop firm dashboard with futures sizing calculator, equity curve simulator, and risk management tools.">
 
   <!-- Fonts -->
-  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=jet-brains-mono@400,500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo">
-      <svg aria-label="PropEdge" width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-label="PropEdge" width="32" height="32" viewBox="0 0 32 32" fill="none" style="flex-shrink:0">
         <rect width="32" height="32" rx="6" fill="var(--color-primary)"/>
         <path d="M7 22 L13 10 L19 17 L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         <circle cx="23" cy="12" r="2.5" fill="white"/>
@@ -47,27 +47,28 @@
       </svg>
       <span class="logo-text">PropEdge</span>
     </div>
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" onclick="toggleSidebar()">
+      <svg class="icon-menu" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      <svg class="icon-close hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
 
   <nav class="sidebar-nav">
     <button class="nav-item active" data-tab="calculator" onclick="switchTab('calculator', this)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
-      <span>Sizing Calculator</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="flex-shrink:0"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>
+      <span class="nav-label">Sizing Calculator</span>
     </button>
     <button class="nav-item" data-tab="simulator" onclick="switchTab('simulator', this)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span>Equity Simulator</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="nav-label">Equity Simulator</span>
     </button>
     <button class="nav-item" data-tab="rulebook" onclick="switchTab('rulebook', this)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Prop Rules</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="nav-label">Prop Rules</span>
     </button>
     <button class="nav-item" data-tab="journal" onclick="switchTab('journal', this)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Trade Journal</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="nav-label">Trade Journal</span>
     </button>
   </nav>
 
@@ -75,7 +76,7 @@
     <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
-    <span class="sidebar-footer-text">v1.0</span>
+    <span class="sidebar-footer-text nav-label">v1.1</span>
   </div>
 </aside>
 
@@ -131,6 +132,8 @@
               <button class="instrument-btn" onclick="setInstrument('6B', this)">6B</button>
               <button class="instrument-btn" onclick="setInstrument('6C', this)">6C</button>
               <button class="instrument-btn" onclick="setInstrument('6J', this)">6J</button>
+              <button class="instrument-btn" onclick="setInstrument('6E', this)">6E</button>
+              <button class="instrument-btn" onclick="setInstrument('MBT', this)">MBT</button>
             </div>
             <div class="instrument-info" id="instrumentInfo">
               <span id="instrDetail">MES · $5/pt · Tick $1.25 · 0.25pt min move</span>
@@ -160,16 +163,26 @@
             </div>
           </div>
 
-          <!-- Entry / SL -->
+          <!-- Entry / SL / TP -->
           <div class="field-row">
             <div class="field-group">
               <label class="field-label">Entry Price</label>
-              <input type="number" id="entryPrice" value="" step="0.01" placeholder="e.g. 5800.25" oninput="calculate()">
+              <input type="number" id="entryPrice" value="" step="any" placeholder="e.g. 5800.25" oninput="calculate()">
             </div>
             <div class="field-group">
               <label class="field-label">Stop Loss Price</label>
-              <input type="number" id="stopLoss" value="" step="0.01" placeholder="e.g. 5794.00" oninput="calculate()">
+              <input type="number" id="stopLoss" value="" step="any" placeholder="e.g. 5794.00" oninput="calculate()">
             </div>
+          </div>
+
+          <!-- Custom TP -->
+          <div class="field-group">
+            <label class="field-label">Custom Take Profit <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <div class="input-wrap">
+              <span class="input-prefix">TP</span>
+              <input type="number" id="customTP" value="" step="any" placeholder="Enter your target price" oninput="calculate()">
+            </div>
+            <div class="custom-tp-result hidden" id="customTPResult"></div>
           </div>
 
         </div>
@@ -285,7 +298,7 @@
           <div class="field-group">
             <label class="field-label">Win Rate (%)</label>
             <div class="input-wrap">
-              <input type="number" id="simWinRate" value="50" min="1" max="99" step="1" oninput="scheduleSimulate()">
+              <input type="number" id="simWinRate" value="50" min="1" max="99" step="1" oninput="syncInput('simWinRate','simWinRateSlider'); scheduleSimulate()">
               <span class="input-suffix">%</span>
             </div>
             <input type="range" id="simWinRateSlider" class="slider" min="10" max="90" value="50" oninput="syncSlider('simWinRate','simWinRateSlider'); scheduleSimulate()">
@@ -295,7 +308,7 @@
             <label class="field-label">Risk:Reward Ratio</label>
             <div class="input-wrap">
               <span class="input-prefix">1:</span>
-              <input type="number" id="simRRR" value="2" min="0.1" max="20" step="0.1" oninput="scheduleSimulate()">
+              <input type="number" id="simRRR" value="2" min="0.1" max="20" step="0.1" oninput="syncInput('simRRR','simRRRSlider'); scheduleSimulate()">
             </div>
             <input type="range" id="simRRRSlider" class="slider" min="0.5" max="10" value="2" step="0.1" oninput="syncSlider('simRRR','simRRRSlider'); scheduleSimulate()">
           </div>
@@ -333,9 +346,23 @@
             </div>
           </div>
 
-          <!-- PROP FIRM LIMITS -->
+          <!-- PROP FIRM LIMITS with explanation -->
           <div class="field-group">
-            <label class="field-label">Prop Firm Limits (optional)</label>
+            <label class="field-label">Prop Firm Loss Limits</label>
+            <div class="dd-type-note" id="ddTypeNote">
+              <div class="dd-type-row">
+                <label class="risk-toggle">
+                  <input type="radio" name="ddType" value="trailing" checked onchange="scheduleSimulate()">
+                  <span><strong>Trailing DD</strong> — limit from peak balance (like Topstep)</span>
+                </label>
+              </div>
+              <div class="dd-type-row">
+                <label class="risk-toggle">
+                  <input type="radio" name="ddType" value="fixed" onchange="scheduleSimulate()">
+                  <span><strong>Fixed DD</strong> — limit from starting balance (like FTMO)</span>
+                </label>
+              </div>
+            </div>
             <div class="field-row">
               <div class="field-group">
                 <label class="field-sublabel">Max Daily Loss</label>
@@ -606,7 +633,8 @@
           <select id="jtInstrument" class="select-input">
             <option>MES</option><option>ES</option><option>MNQ</option><option>NQ</option>
             <option>MGC</option><option>GC</option><option>MCL</option><option>CL</option>
-            <option>6B</option><option>6C</option><option>6J</option>
+            <option>6B</option><option>6C</option><option>6J</option><option>6E</option>
+            <option>MBT</option>
           </select>
         </div>
       </div>
@@ -626,17 +654,17 @@
       <div class="field-row">
         <div class="field-group">
           <label class="field-label">Entry Price</label>
-          <input type="number" id="jtEntry" step="0.01" placeholder="5800.25">
+          <input type="number" id="jtEntry" step="any" placeholder="5800.25">
         </div>
         <div class="field-group">
           <label class="field-label">Exit Price</label>
-          <input type="number" id="jtExit" step="0.01" placeholder="5810.50">
+          <input type="number" id="jtExit" step="any" placeholder="5810.50">
         </div>
       </div>
       <div class="field-row">
         <div class="field-group">
           <label class="field-label">Stop Loss</label>
-          <input type="number" id="jtStopLoss" step="0.01" placeholder="5795.00">
+          <input type="number" id="jtStopLoss" step="any" placeholder="5795.00">
         </div>
         <div class="field-group">
           <label class="field-label">P&amp;L ($) — auto-calc or override</label>

@@ -1095,6 +1095,126 @@ img, svg { display: block; }
   }
 }
 
+/* ─── SIDEBAR COLLAPSED STATE ────────────────────── */
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+  min-width: var(--sidebar-collapsed);
+}
+
+/* On mobile: sidebar always stays at collapsed width, content fills the rest */
+@media (max-width: 640px) {
+  .sidebar {
+    /* Keep sidebar in flow at collapsed width on mobile */
+    width: var(--sidebar-collapsed) !important;
+    min-width: var(--sidebar-collapsed) !important;
+  }
+  .main-content {
+    padding: var(--space-4) var(--space-3);
+  }
+  /* Hide logo text and nav labels on mobile always */
+  .sidebar .logo-text,
+  .sidebar .nav-label,
+  .sidebar .sidebar-footer-text {
+    display: none !important;
+  }
+  /* Center icons on mobile */
+  .nav-item {
+    justify-content: center;
+    padding: var(--space-3);
+  }
+  .sidebar-header {
+    justify-content: center;
+  }
+  .sidebar-toggle {
+    display: none; /* hide the toggle on mobile — sidebar stays mini */
+  }
+  .sidebar-footer {
+    justify-content: center;
+  }
+}
+
+/* ─── CUSTOM TP RESULT ────────────────────────────── */
+.custom-tp-result {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.ctp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ctp-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ctp-rr {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-success);
+  background: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+}
+
+.ctp-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.ctp-stat-label {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ─── DD TYPE RADIO (SIMULATOR) ───────────────────── */
+.dd-type-note {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.dd-type-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.dd-type-row .risk-toggle {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.dd-type-row .risk-toggle span {
+  color: var(--color-text-muted);
+}
+
+.dd-type-row .risk-toggle input[type="radio"]:checked ~ span {
+  color: var(--color-text);
+}
+
 /* ─── FOOTER ATTRIBUTION ──────────────────────────── */
 .attribution-footer {
   text-align: center;
